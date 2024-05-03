@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+Datasets/
+*.csv
+*.json
+*.gpkg
