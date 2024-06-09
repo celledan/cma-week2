@@ -193,13 +193,6 @@ ggplot(caro_long, aes(name, value)) +
 
 
 ###Exercise C
-# Load required libraries
-library("readr")    # To read CSV files
-library("sf")       # For spatial data operations
-library("dplyr")    # For data manipulation
-library("ggplot2")  # For creating graphics
-library("lubridate")# For handling date and time
-library("tmap")     # For creating thematic maps
 
 
 # Read the GPX file using its path
@@ -220,8 +213,6 @@ gpx_data <- gpx_data %>% mutate(
 )
 
 
-
-library(tmap)
 tmap_mode("view")
 
 tm_shape(gpx_data) + 
