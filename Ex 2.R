@@ -193,8 +193,52 @@ ggplot(caro_long, aes(name, value)) +
 
 
 ###Exercise C
-install.packages("XML")
-library(XML)
-install.packages("xml2")
-library(xml2)
+# Load required libraries
+library("readr")    # To read CSV files
+library("sf")       # For spatial data operations
+library("dplyr")    # For data manipulation
+library("ggplot2")  # For creating graphics
+library("lubridate")# For handling date and time
+library("tmap")     # For creating thematic maps
+
+
+# Read the GPX file using its path
+file_path <- "C:/Users/danie/OneDrive - ZHAW/ZHAW/FS24/Patterns and trends in environmental data/R/Exercises/activity_muster.gpx"
+gpx_data <- st_read(file_path, layer = "track_points")
+
+# Transform the data to the Swiss LV95 coordinate system (EPSG:2056)
+gpx_data <- st_transform(gpx_data, 2056)
+
+# Ensure the correct time format and sort the data by time
+gpx_data$time <- as.POSIXct(gpx_data$time, format = "%Y-%m-%dT%H:%M:%SZ")
+gpx_data <- gpx_data %>% arrange(time)
+
+# Extract coordinates after transformation
+gpx_data <- gpx_data %>% mutate(
+  easting = st_coordinates(geometry)[, 1],
+  northing = st_coordinates(geometry)[, 2]
+)
+
+
+
+library(tmap)
+tmap_mode("view")
+
+tm_shape(gpx_data) + 
+  tm_dots()
+
+
+gpx_data_sample_line <- gpx_data |> 
+  # dissolve to a MULTIPOINT:
+  summarise(do_union = FALSE) |> 
+  st_cast("LINESTRING")
+
+tmap_options(basemaps = "OpenStreetMap")
+
+tm_shape(gpx_data_sample_line) +
+  tm_lines() +
+  tm_shape(gpx_data) + 
+  tm_dots()
+
+
 
